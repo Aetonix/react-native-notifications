@@ -1,5 +1,4 @@
 /**
- * @providesModule RNNotifications
  * @flow
  */
 "use strict";
@@ -190,6 +189,7 @@ export default class NotificationsIOS {
    * - `alertTitle` : The message title displayed in the notification.
    * - `alertAction` : The "action" displayed beneath an actionable notification. Defaults to "view";
    * - `soundName` : The sound played when the notification is fired (optional).
+   * - `silent`    : If true, the notification sound will be suppressed (optional).
    * - `category`  : The category of this notification, required for actionable notifications (optional).
    * - `userInfo`  : An optional object containing additional notification data.
    * - `fireDate` : The date and time when the system should deliver the notification. if not specified, the notification will be dispatched immediately.
@@ -211,5 +211,44 @@ export default class NotificationsIOS {
 
   static isRegisteredForRemoteNotifications() {
     return NativeRNNotifications.isRegisteredForRemoteNotifications();
+  }
+
+  static checkPermissions() {
+    return NativeRNNotifications.checkPermissions();
+  }
+
+  /**
+   * Remove all delivered notifications from Notification Center
+   */
+  static removeAllDeliveredNotifications() {
+    return NativeRNNotifications.removeAllDeliveredNotifications();
+  }
+
+  /**
+   * Removes the specified notifications from Notification Center
+   *
+   * @param identifiers Array of notification identifiers
+   */
+  static removeDeliveredNotifications(identifiers: Array<String>) {
+    return NativeRNNotifications.removeDeliveredNotifications(identifiers);
+  }
+
+  /**
+   * Provides you with a list of the app’s notifications that are still displayed in Notification Center
+   *
+   * @param callback Function which receive an array of delivered notifications
+   *
+   *  A delivered notification is an object containing:
+   *
+   * - `identifier`  : The identifier of this notification.
+   * - `alertBody` : The message displayed in the notification alert.
+   * - `alertTitle` : The message title displayed in the notification.
+   * - `category`  : The category of this notification, if has one.
+   * - `userInfo`  : An optional object containing additional notification data.
+   * - `thread-id`  : The thread identifier of this notification, if has one.
+   * - `fireDate` : The date and time when the system should deliver the notification. if not specified, the notification will be dispatched immediately.
+   */
+  static getDeliveredNotifications(callback: (notifications: Array<Object>) => void) {
+    return NativeRNNotifications.getDeliveredNotifications(callback);
   }
 }
