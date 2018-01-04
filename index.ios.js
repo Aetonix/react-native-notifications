@@ -217,6 +217,10 @@ export default class NotificationsIOS {
     return NativeRNNotifications.checkPermissions();
   }
 
+  static setApplicationIconBadgeNumber(number: number) {
+    return NativeRNNotifications.setApplicationIconBadgeNumber(number);
+  }
+
   /**
    * Remove all delivered notifications from Notification Center
    */

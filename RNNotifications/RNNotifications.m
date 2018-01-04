@@ -647,6 +647,11 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTPromiseResolveBlock) resolve
               });
 }
 
+RCT_EXPORT_METHOD(setApplicationIconBadgeNumber:(NSInteger)number)
+{
+  [RCTSharedApplication() setApplicationIconBadgeNumber: number];
+}
+
 #if !TARGET_OS_TV
 
 RCT_EXPORT_METHOD(removeAllDeliveredNotifications)
