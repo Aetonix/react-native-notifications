@@ -14,16 +14,20 @@ import com.wix.reactnativenotifications.core.notifications.RemoteNotification;
 
 import java.util.List;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 import static com.wix.reactnativenotifications.Defs.LOGTAG;
 
 public class FcmMessageHandlerService extends FirebaseMessagingService {
+
+    static boolean flag = false;
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
         Log.d(LOGTAG, "New message from firebase");
         String type = message.getData().get("key1");
-        if(type!=null && type.equalsIgnoreCase("call")){
-            try {
+            if(type!=null && type.equalsIgnoreCase("call")){
+                try {
                 // The desired behavior upon notification opening is as follows:
                 // - If app is in foreground (and possibly has several activities in stack), simply keep it as-is in foreground.
                 // - If app is in background, bring it to foreground as-is (context stack untampered).
@@ -47,7 +51,6 @@ public class FcmMessageHandlerService extends FirebaseMessagingService {
                         // If an initial notification has been set from a cold boot, we must pass on
                         // the notification to ensure it is accessible from subsequent getInitialNotification calls
                         intent.putExtras(notification.asBundle());
-
                     }
                     appContext.startActivity(intent);
                 } else {
@@ -57,7 +60,12 @@ public class FcmMessageHandlerService extends FirebaseMessagingService {
                 // Note: this is an imaginary scenario cause we're asking for a class of our very own package.
                 Log.e(LOGTAG, "Failed to launch/resume app", e);
             }
-        }
+        } else {
+                if(this.isBackground() && !flag) {
+                    ShortcutBadger.applyCount(getApplicationContext(), 1);
+                    flag = true;
+                }
+            }
 
         final NotificationProps notificationProps = NotificationProps.fromRemoteMessage(this, message);
         new RemoteNotification(this, notificationProps).onReceived();
