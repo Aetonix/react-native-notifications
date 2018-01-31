@@ -138,7 +138,7 @@ public class LocalNotification implements ILocalNotification {
                 .setSmallIcon(icon != null ? icon : mContext.getApplicationContext().getApplicationInfo().icon)
                 .setSound(mNotificationProps.getSound())
                 .setContentIntent(intent)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
                 .setAutoCancel(true);
 
         final Integer color = mNotificationProps.getColor();
