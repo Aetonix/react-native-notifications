@@ -1,23 +1,18 @@
 @import UIKit;
-
-#if __has_include(<React/RCTBridgeModule.h>)
-  #import <React/RCTBridgeModule.h>
-#else
-  #import "RCTBridgeModule.h"
-#endif
 #import <PushKit/PushKit.h>
+@import UserNotifications;
 
-@interface RNNotifications : NSObject <RCTBridgeModule>
+@interface RNNotifications : NSObject
+
++ (instancetype)sharedInstance;
+
++ (void)startMonitorNotifications;
++ (void)startMonitorPushKitNotifications;
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(id)deviceToken;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
-+ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
-+ (void)didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type;
 
-+ (void)didReceiveRemoteNotification:(NSDictionary *)notification;
-+ (void)didReceiveLocalNotification:(UILocalNotification *)notification;
-
-+ (void)handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void (^)())completionHandler;
-+ (void)handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void (^)())completionHandler;
++ (void)addNativeDelegate:(id<UNUserNotificationCenterDelegate>)delegate;
++ (void)removeNativeDelegate:(id<UNUserNotificationCenterDelegate>)delegate;
 
 @end
