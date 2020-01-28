@@ -169,7 +169,7 @@ public class PushNotification implements IPushNotification {
             notificationManager.createNotificationChannel(channel);
             notification.setChannelId(CHANNEL_ID);
         } else {
-					notification.setPriority(Notification.PRIORITY_DEFAULT)
+					notification.setPriority(Notification.PRIORITY_DEFAULT);
 				}
 
         return notification;
