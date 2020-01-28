@@ -144,13 +144,13 @@ public class PushNotification implements IPushNotification {
     protected Notification.Builder getNotificationBuilder(PendingIntent intent) {
 
         String CHANNEL_ID = "channel_01";
-        String CHANNEL_NAME = "Channel Name";
+        String CHANNEL_NAME = "aTouchAway";
 
         final Notification.Builder notification = new Notification.Builder(mContext)
                 .setContentTitle(mNotificationProps.getTitle())
                 .setContentText(mNotificationProps.getBody())
                 .setContentIntent(intent)
-                .setDefaults(Notification.DEFAULT_ALL)
+                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
                 .setAutoCancel(true);
 
 
@@ -168,7 +168,9 @@ public class PushNotification implements IPushNotification {
             final NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
             notification.setChannelId(CHANNEL_ID);
-        }
+        } else {
+					notification.setPriority(Notification.PRIORITY_DEFAULT)
+				}
 
         return notification;
     }
