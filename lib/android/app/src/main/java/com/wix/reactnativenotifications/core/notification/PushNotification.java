@@ -150,7 +150,7 @@ public class PushNotification implements IPushNotification {
                 .setContentTitle(mNotificationProps.getTitle())
                 .setContentText(mNotificationProps.getBody())
                 .setContentIntent(intent)
-                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true);
 
 
@@ -169,7 +169,7 @@ public class PushNotification implements IPushNotification {
             notificationManager.createNotificationChannel(channel);
             notification.setChannelId(CHANNEL_ID);
         } else {
-					notification.setPriority(Notification.PRIORITY_DEFAULT);
+					notification.setPriority(Notification.PRIORITY_HIGH);
 				}
 
         return notification;
