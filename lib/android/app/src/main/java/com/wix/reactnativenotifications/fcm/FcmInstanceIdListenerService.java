@@ -36,7 +36,7 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
         if(type!=null && type.equalsIgnoreCase("call")){
           try {
             if(this.isBackground()){
-              Context.appContext = getApplicationContext();
+              Context appContext = getApplicationContext();
               final Intent helperIntent = appContext.getPackageManager().getLaunchIntentForPackage(appContext.getPackageName());
               final Intent intent = new Intent(appContext, Class.forName(helperIntent.getComponent().getClassName()));
               
@@ -44,7 +44,7 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
               intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
               
               intent.putExtra(LAUNCH_FLAG_KEY_NAME, true);
-              appContent.startActivity(intent);
+              appContext.startActivity(intent);
             }
           } catch (ClassNotFoundException e){
             Log.d(LOGTAG, "Failed to launch/resume app", e);
