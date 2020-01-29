@@ -17,7 +17,6 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.wix.reactnativenotifications.Defs.LOGTAG;
 
-private static final String LAUNCH_FLAG_KEY_NAME = "launchedFromNotification";
 
 /**
  * Instance-ID + token refreshing handling service. Contacts the FCM to fetch the updated token.
@@ -25,8 +24,10 @@ private static final String LAUNCH_FLAG_KEY_NAME = "launchedFromNotification";
  * @author amitd
  */
 public class FcmInstanceIdListenerService extends FirebaseMessagingService {
-  
-    protected static boolean flag = false;
+
+    private static final String LAUNCH_FLAG_KEY_NAME = "launchedFromNotification";
+
+    private static boolean flag = false;
     
     @Override
     public void onMessageReceived(RemoteMessage message){
