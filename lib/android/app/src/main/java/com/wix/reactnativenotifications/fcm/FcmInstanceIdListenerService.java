@@ -17,6 +17,8 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.wix.reactnativenotifications.Defs.LOGTAG;
 
+private static final String LAUNCH_FLAG_KEY_NAME = "launchedFromNotification";
+
 /**
  * Instance-ID + token refreshing handling service. Contacts the FCM to fetch the updated token.
  *
@@ -40,7 +42,7 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
               intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
               intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
               
-              intent.putExtra(IntentExtras.FCM_PREFIX, true);
+              intent.putExtra(LAUNCH_FLAG_KEY_NAME, true);
               appContent.startActivity(intent);
             }
           } catch (ClassNotFoundException e){
