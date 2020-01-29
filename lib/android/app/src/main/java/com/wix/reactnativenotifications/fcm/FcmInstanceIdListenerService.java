@@ -26,8 +26,6 @@ import static com.wix.reactnativenotifications.Defs.LOGTAG;
 public class FcmInstanceIdListenerService extends FirebaseMessagingService {
 
     private static final String LAUNCH_FLAG_KEY_NAME = "launchedFromNotification";
-
-    private static boolean flag = false;
     
     @Override
     public void onMessageReceived(RemoteMessage message){
@@ -50,12 +48,10 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
             Log.d(LOGTAG, "Failed to launch/resume app", e);
           }
         } else {
-          if(this.isBackground() && !flag){
+          if(this.isBackground()){
             ShortcutBadger.applyCount(getApplicationContext(), Integer.parseInt(message.getData().get("badge")));
-            flag = true;
           }
         }
-
 
         Log.d(LOGTAG, "New message from FCM: " + bundle);
         try {
