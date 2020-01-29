@@ -51,7 +51,7 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
           }
         } else {
           if(this.isBackground() && !flag){
-            ShortcutBadger.applyCount(getApplicationContext(), 1);
+            ShortcutBadger.applyCount(getApplicationContext(), message.getData().get("badge"));
             flag = true;
           }
         }
