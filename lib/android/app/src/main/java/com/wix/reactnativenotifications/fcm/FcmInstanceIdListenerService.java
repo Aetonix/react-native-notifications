@@ -55,7 +55,7 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
             try{
               count = Integer.parseInt(message.getData().get("badge"));
             } catch(NumberFormatException e){
-              Log.e(LOGTAG, e);
+              Log.e(LOGTAG, e.getMessage());
             }
             ShortcutBadger.applyCount(getApplicationContext(), count);
           }
