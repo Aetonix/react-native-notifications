@@ -1,5 +1,7 @@
 package com.wix.reactnativenotifications.fcm;
 
+import java.lang.NumberFormatException;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -49,7 +51,13 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
           }
         } else {
           if(this.isBackground()){
-            ShortcutBadger.applyCount(getApplicationContext(), Integer.parseInt(message.getData().get("badge")));
+            Integer count = 1;
+            try{
+              count = Integer.parseInt(message.getData().get("badge"));
+            } catch(NumberFormatException e){
+              Log.e(LOGTAG, e);
+            }
+            ShortcutBadger.applyCount(getApplicationContext(), count);
           }
         }
 
