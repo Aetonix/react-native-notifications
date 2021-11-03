@@ -50,10 +50,10 @@ public class FcmToken implements IFcmToken {
     public void onManualRefresh() {
         synchronized (mAppContext) {
             if (sToken == null) {
-                Log.i(LOGTAG, "Manual token refresh => asking for new token");
+                Log.d(LOGTAG, "Manual token refresh => asking for new token");
                 refreshToken();
             } else {
-                Log.i(LOGTAG, "Manual token refresh => publishing existing token ("+sToken+")");
+                Log.d(LOGTAG, "Manual token refresh => publishing existing token ("+sToken+")");
                 sendTokenToJS();
             }
         }
@@ -63,11 +63,11 @@ public class FcmToken implements IFcmToken {
     public void onAppReady() {
         synchronized (mAppContext) {
             if (sToken == null) {
-                Log.i(LOGTAG, "App initialized => asking for new token");
+                Log.d(LOGTAG, "App initialized => asking for new token");
                 refreshToken();
             } else {
                 // Except for first run, this should be the case.
-                Log.i(LOGTAG, "App initialized => publishing existing token ("+sToken+")");
+                Log.d(LOGTAG, "App initialized => publishing existing token ("+sToken+")");
                 sendTokenToJS();
             }
         }
@@ -78,7 +78,7 @@ public class FcmToken implements IFcmToken {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 sToken = instanceIdResult.getToken();
-                Log.i(LOGTAG, "FCM has a new token" + "=" + sToken);
+                Log.d(LOGTAG, "FCM has a new token" + "=" + sToken);
                 sendTokenToJS();
             }
         });
