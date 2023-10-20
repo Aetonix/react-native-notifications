@@ -29,8 +29,14 @@
 }
 
 - (void)didReceiveNotificationResponse:(UNNotificationResponse *)response completionHandler:(void (^)(void))completionHandler {
-    [_store setActionCompletionHandler:completionHandler withCompletionKey:response.notification.request.identifier];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self->_store setActionCompletionHandler:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler();
+                });
+        } withCompletionKey:response.notification.request.identifier];
     [RNEventEmitter sendEvent:RNNotificationOpened body:[RNNotificationParser parseNotificationResponse:response]];
+    });
 }
 
 @end
