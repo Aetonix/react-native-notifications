@@ -5,7 +5,7 @@
 
 - (instancetype)init;
 
-- (void)requestPermissions;
+- (void)requestPermissions:(NSDictionary *)options;
 
 - (void)setCategories:(NSArray *)categories;
 
@@ -15,17 +15,19 @@
 
 - (void)finishPresentingNotification:(NSString *)completionKey presentingOptions:(NSDictionary *)presentingOptions;
 
+- (void)finishHandlingBackgroundAction:(NSString *)completionKey backgroundFetchResult:(NSString *)backgroundFetchResult;
+
 - (void)abandonPermissions;
 
 - (void)registerPushKit;
 
-- (void)getBadgeCount:(RCTResponseSenderBlock)callback;
+- (void)getBadgeCount:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject;
 
 - (void)setBadgeCount:(int)count;
 
 - (void)postLocalNotification:(NSDictionary *)notification withId:(NSNumber *)notificationId;
 
-- (void)cancelLocalNotification:(NSString *)notificationId;
+- (void)cancelLocalNotification:(NSNumber *)notificationId;
 
 - (void)cancelAllLocalNotifications;
 
@@ -39,6 +41,6 @@
 
 - (void)removeDeliveredNotifications:(NSArray<NSString *> *)identifiers;
 
-- (void)getDeliveredNotifications:(RCTResponseSenderBlock)callback;
+- (void)getDeliveredNotifications:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject;
 
 @end

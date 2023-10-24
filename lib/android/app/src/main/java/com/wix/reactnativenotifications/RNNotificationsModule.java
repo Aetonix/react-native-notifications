@@ -19,7 +19,9 @@ import com.wix.reactnativenotifications.core.AppLifecycleFacadeHolder;
 import com.wix.reactnativenotifications.core.InitialNotificationHolder;
 import com.wix.reactnativenotifications.core.NotificationIntentAdapter;
 import com.wix.reactnativenotifications.core.ReactAppLifecycleFacade;
+import com.wix.reactnativenotifications.core.notification.INotificationChannel;
 import com.wix.reactnativenotifications.core.notification.IPushNotification;
+import com.wix.reactnativenotifications.core.notification.NotificationChannel;
 import com.wix.reactnativenotifications.core.notification.PushNotification;
 import com.wix.reactnativenotifications.core.notification.PushNotificationProps;
 import com.wix.reactnativenotifications.core.notificationdrawer.IPushNotificationsDrawer;
@@ -46,7 +48,7 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
 
     @Override
     public void initialize() {
-        Log.d(LOGTAG, "Native module init");
+        if(BuildConfig.DEBUG) Log.d(LOGTAG, "Native module init");
         startFcmIntentService(FcmInstanceIdRefreshHandlerService.EXTRA_IS_APP_INIT);
 
         final IPushNotificationsDrawer notificationsDrawer = PushNotificationsDrawer.get(getReactApplicationContext().getApplicationContext());
@@ -71,13 +73,13 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void refreshToken() {
-        Log.d(LOGTAG, "Native method invocation: refreshToken()");
+        if(BuildConfig.DEBUG) Log.d(LOGTAG, "Native method invocation: refreshToken()");
         startFcmIntentService(FcmInstanceIdRefreshHandlerService.EXTRA_MANUAL_REFRESH);
     }
 
     @ReactMethod
     public void getInitialNotification(final Promise promise) {
-        Log.d(LOGTAG, "Native method invocation: getInitialNotification");
+        if(BuildConfig.DEBUG) Log.d(LOGTAG, "Native method invocation: getInitialNotification");
         Object result = null;
 
         try {
@@ -87,6 +89,9 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
             }
 
             result = Arguments.fromBundle(notification.asBundle());
+            InitialNotificationHolder.getInstance().clear();
+        } catch (NullPointerException e) {
+            Log.e(LOGTAG, "getInitialNotification: Null pointer exception");
         } finally {
             promise.resolve(result);
         }
@@ -94,7 +99,7 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void postLocalNotification(ReadableMap notificationPropsMap, int notificationId) {
-        Log.d(LOGTAG, "Native method invocation: postLocalNotification");
+        if(BuildConfig.DEBUG) Log.d(LOGTAG, "Native method invocation: postLocalNotification");
         final Bundle notificationProps = Arguments.toBundle(notificationPropsMap);
         final IPushNotification pushNotification = PushNotification.get(getReactApplicationContext().getApplicationContext(), notificationProps);
         pushNotification.onPostRequest(notificationId);
@@ -127,10 +132,20 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
         notificationsDrawer.onAllNotificationsClearRequest();
     }
 
+    @ReactMethod
+    void setNotificationChannel(ReadableMap notificationChannelPropsMap) {
+        final Bundle notificationChannelProps = Arguments.toBundle(notificationChannelPropsMap);
+        INotificationChannel notificationsDrawer = NotificationChannel.get(
+                getReactApplicationContext().getApplicationContext(),
+                notificationChannelProps
+        );
+        notificationsDrawer.setNotificationChannel();
+    }
+
     protected void startFcmIntentService(String extraFlag) {
         final Context appContext = getReactApplicationContext().getApplicationContext();
         final Intent tokenFetchIntent = new Intent(appContext, FcmInstanceIdRefreshHandlerService.class);
         tokenFetchIntent.putExtra(extraFlag, true);
-        appContext.startService(tokenFetchIntent);
+        FcmInstanceIdRefreshHandlerService.enqueueWork(appContext, tokenFetchIntent);
     }
 }

@@ -3,26 +3,30 @@ import { Notification } from '../DTO/Notification';
 import { NotificationCompletion } from '../interfaces/NotificationCompletion';
 import { NotificationPermissions } from '../interfaces/NotificationPermissions';
 import { NotificationCategory } from '../interfaces/NotificationCategory';
+import { NotificationChannel } from '../interfaces/NotificationChannel';
+import { NotificationPermissionOptions } from '../interfaces/NotificationPermissions';
 
 interface NativeCommandsModule {
   getInitialNotification(): Promise<Object>;
   postLocalNotification(notification: Notification, id: number): void;
-  requestPermissions(): void;
+  requestPermissions(options: NotificationPermissionOptions): void;
   abandonPermissions(): void;
   refreshToken(): void;
   registerPushKit(): void;
   getBadgeCount(): Promise<number>;
   setBadgeCount(count: number): void;
-  cancelLocalNotification(notificationId: string): void;
+  cancelLocalNotification(notificationId: number): void;
   cancelAllLocalNotifications(): void;
   isRegisteredForRemoteNotifications(): Promise<boolean>;
   checkPermissions(): Promise<NotificationPermissions>;
   removeDeliveredNotifications(identifiers: Array<string>): void;
   removeAllDeliveredNotifications(): void;
-  getDeliveredNotifications(): Array<Notification>;
+  getDeliveredNotifications(): Promise<Notification[]>;
   setCategories(categories: [NotificationCategory?]): void;
   finishPresentingNotification(notificationId: string, callback: NotificationCompletion): void;
   finishHandlingAction(notificationId: string): void;
+  setNotificationChannel(notificationChannel: NotificationChannel): void;
+  finishHandlingBackgroundAction(notificationId: string, backgroundFetchResult: string): void;
 }
 
 export class NativeCommandsSender {
@@ -38,9 +42,9 @@ export class NativeCommandsSender {
   getInitialNotification(): Promise<Object> {
     return this.nativeCommandsModule.getInitialNotification();
   }
-  
-  requestPermissions() {
-    return this.nativeCommandsModule.requestPermissions();
+
+  requestPermissions(options?: NotificationPermissionOptions) {
+    return this.nativeCommandsModule.requestPermissions(options || {});
   }
 
   abandonPermissions() {
@@ -67,7 +71,7 @@ export class NativeCommandsSender {
     this.nativeCommandsModule.setBadgeCount(count);
   }
 
-  cancelLocalNotification(notificationId: string) {
+  cancelLocalNotification(notificationId: number) {
     this.nativeCommandsModule.cancelLocalNotification(notificationId);
   }
 
@@ -91,7 +95,7 @@ export class NativeCommandsSender {
     return this.nativeCommandsModule.removeDeliveredNotifications(identifiers);
   }
 
-  public getDeliveredNotifications(): Array<Notification> {
+  public getDeliveredNotifications(): Promise<Notification[]> {
     return this.nativeCommandsModule.getDeliveredNotifications();
   }
 
@@ -101,5 +105,13 @@ export class NativeCommandsSender {
 
   finishHandlingAction(notificationId: string): void {
     this.nativeCommandsModule.finishHandlingAction(notificationId);
+  }
+
+  setNotificationChannel(notificationChannel: NotificationChannel) {
+    this.nativeCommandsModule.setNotificationChannel(notificationChannel);
+  }
+
+  finishHandlingBackgroundAction(notificationId: string, backgroundFetchResult: string): void {
+    this.nativeCommandsModule.finishHandlingBackgroundAction(notificationId, backgroundFetchResult);
   }
 }
