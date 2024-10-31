@@ -1,8 +1,10 @@
 import { EventsRegistry } from './events/EventsRegistry';
 import { Notification } from './DTO/Notification';
 import { NotificationCategory } from './interfaces/NotificationCategory';
+import { NotificationChannel } from './interfaces/NotificationChannel';
 import { NotificationsIOS } from './NotificationsIOS';
 import { NotificationsAndroid } from './NotificationsAndroid';
+import { NotificationPermissionOptions } from './interfaces/NotificationPermissions';
 export declare class NotificationsRoot {
     readonly _ios: NotificationsIOS;
     readonly _android: NotificationsAndroid;
@@ -18,11 +20,11 @@ export declare class NotificationsRoot {
     /**
      * registerRemoteNotifications
      */
-    registerRemoteNotifications(): void;
+    registerRemoteNotifications(options?: NotificationPermissionOptions): void;
     /**
      * postLocalNotification
      */
-    postLocalNotification(notification: Notification, id: number): void;
+    postLocalNotification(notification: Notification, id?: number): number;
     /**
      * getInitialNotification
      */
@@ -34,7 +36,7 @@ export declare class NotificationsRoot {
     /**
      * cancelLocalNotification
     */
-    cancelLocalNotification(notificationId: string): void;
+    cancelLocalNotification(notificationId: number): void;
     /**
      * removeAllDeliveredNotifications
      */
@@ -44,12 +46,16 @@ export declare class NotificationsRoot {
      */
     isRegisteredForRemoteNotifications(): Promise<boolean>;
     /**
+     * setNotificationChannel
+     */
+    setNotificationChannel(notificationChannel: NotificationChannel): void;
+    /**
      * Obtain the events registry instance
      */
     events(): EventsRegistry;
     /**
      * ios/android getters
      */
-    readonly ios: NotificationsIOS;
-    readonly android: NotificationsAndroid;
+    get ios(): NotificationsIOS;
+    get android(): NotificationsAndroid;
 }

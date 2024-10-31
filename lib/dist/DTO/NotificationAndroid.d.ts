@@ -1,7 +1,7 @@
 import { Notification } from './Notification';
 export declare class NotificationAndroid extends Notification {
     constructor(payload: object);
-    readonly title: string;
-    readonly body: string;
-    readonly sound: string;
+    get title(): string;
+    get body(): string;
+    get sound(): string;
 }
