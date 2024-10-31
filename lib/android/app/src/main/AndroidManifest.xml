@@ -3,15 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wix.reactnativenotifications">
 
-    <!--
-     Permissions required for enabling FCM.
-     -->
-    <permission
-        android:name="${applicationId}.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-
     <application>
 
         <!--
@@ -20,8 +11,8 @@
         <service android:name=".core.ProxyService"/>
 
         <service
-            android:exported="true"
-            android:name=".fcm.FcmInstanceIdListenerService">
+            android:name=".fcm.FcmInstanceIdListenerService"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -30,7 +21,8 @@
 
         <service
             android:name=".fcm.FcmInstanceIdRefreshHandlerService"
-            android:exported="false" />
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

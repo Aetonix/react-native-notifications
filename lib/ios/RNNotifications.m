@@ -10,6 +10,7 @@
     RNPushKit* _pushKit;
     RNNotificationCenterListener* _notificationCenterListener;
     RNNotificationEventHandler* _notificationEventHandler;
+    RNNotificationsStore* _store;
     RNPushKitEventHandler* _pushKitEventHandler;
     RNEventEmitter* _eventEmitter;
     RNNotificationCenterMulticast* _notificationCenterMulticast;
@@ -17,7 +18,8 @@
 
 - (instancetype)init {
     self = [super init];
-    _notificationEventHandler = [[RNNotificationEventHandler alloc] initWithStore:[RNNotificationsStore new]];
+    _store = [RNNotificationsStore sharedInstance];
+    _notificationEventHandler = [[RNNotificationEventHandler alloc] initWithStore:_store];
     return self;
 }
 
@@ -39,6 +41,10 @@
     [[self sharedInstance] startMonitorPushKitNotifications];
 }
 
++ (void)didReceiveBackgroundNotification:(NSDictionary *)userInfo withCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [[self sharedInstance] didReceiveBackgroundNotification:userInfo withCompletionHandler:completionHandler];
+}
+
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(id)deviceToken {
     [[self sharedInstance] didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
@@ -55,6 +61,10 @@
     [[self sharedInstance] removeNativeDelegate:delegate];
 }
 
+- (RNNotificationCenterMulticast*)multicast {
+    return _notificationCenterMulticast;
+}
+
 - (void)startMonitorNotifications {
     _notificationCenterListener = [[RNNotificationCenterListener alloc] initWithNotificationEventHandler:_notificationEventHandler];
     
@@ -65,8 +75,12 @@
 }
 
 - (void)startMonitorPushKitNotifications {
-    _pushKitEventHandler = [RNPushKitEventHandler new];
+    _pushKitEventHandler = [[RNPushKitEventHandler alloc] initWithStore:_store];
     _pushKit = [[RNPushKit alloc] initWithEventHandler:_pushKitEventHandler];
+}
+
+- (void)didReceiveBackgroundNotification:(NSDictionary *)userInfo withCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [_notificationEventHandler didReceiveBackgroundNotification:userInfo withCompletionHandler:completionHandler];
 }
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(id)deviceToken {

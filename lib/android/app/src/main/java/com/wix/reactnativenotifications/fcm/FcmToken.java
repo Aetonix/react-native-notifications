@@ -7,10 +7,8 @@ import android.util.Log;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.wix.reactnativenotifications.BuildConfig;
 import com.wix.reactnativenotifications.core.JsIOHelper;
 
 import static com.wix.reactnativenotifications.Defs.LOGTAG;
@@ -50,10 +48,10 @@ public class FcmToken implements IFcmToken {
     public void onManualRefresh() {
         synchronized (mAppContext) {
             if (sToken == null) {
-                Log.d(LOGTAG, "Manual token refresh => asking for new token");
+                if(BuildConfig.DEBUG) Log.i(LOGTAG, "Manual token refresh => asking for new token");
                 refreshToken();
             } else {
-                Log.d(LOGTAG, "Manual token refresh => publishing existing token ("+sToken+")");
+                if(BuildConfig.DEBUG) Log.i(LOGTAG, "Manual token refresh => publishing existing token ("+sToken+")");
                 sendTokenToJS();
             }
         }
@@ -63,25 +61,30 @@ public class FcmToken implements IFcmToken {
     public void onAppReady() {
         synchronized (mAppContext) {
             if (sToken == null) {
-                Log.d(LOGTAG, "App initialized => asking for new token");
+                if(BuildConfig.DEBUG) Log.i(LOGTAG, "App initialized => asking for new token");
                 refreshToken();
             } else {
                 // Except for first run, this should be the case.
-                Log.d(LOGTAG, "App initialized => publishing existing token ("+sToken+")");
+                if(BuildConfig.DEBUG) Log.i(LOGTAG, "App initialized => publishing existing token ("+sToken+")");
                 sendTokenToJS();
             }
         }
     }
 
     protected void refreshToken() {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( new OnSuccessListener<InstanceIdResult>() {
-            @Override
-            public void onSuccess(InstanceIdResult instanceIdResult) {
-                sToken = instanceIdResult.getToken();
-                Log.d(LOGTAG, "FCM has a new token" + "=" + sToken);
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    if (BuildConfig.DEBUG) Log.w(LOGTAG, "Fetching FCM registration token failed", task.getException());
+                    return;
+                }
+                sToken = task.getResult();
+                if (mAppContext instanceof IFcmTokenListenerApplication) {
+                    ((IFcmTokenListenerApplication) mAppContext).onNewFCMToken(sToken);
+                }
+                if (BuildConfig.DEBUG) Log.i(LOGTAG, "FCM has a new token" + "=" + sToken);
                 sendTokenToJS();
-            }
-        });
+            });
     }
 
     protected void sendTokenToJS() {
