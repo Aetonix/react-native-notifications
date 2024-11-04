@@ -34,7 +34,7 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage message){
         Bundle bundle = message.toIntent().getExtras();
         String type = message.getData().get("key1");
-        if(type!=null && type.equalsIgnoreCase("call")){
+        if(type!=null && (type.equalsIgnoreCase("call") || type.equalsIgnoreCase("meeting"))){
           try {
             if(this.isBackground()){
               Context appContext = getApplicationContext();
